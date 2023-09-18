@@ -38,7 +38,7 @@
     $extensaoArq = $info->getExtension();
     $novoNomeFoto = $ra . "." . $extensaoArq;
 
-    if ( ($nomeFoto != "") && (!preg_match('/^image\/(jpeg|png|gif)$/', $tipoFoto)) ) { //validção tipo arquivo
+    if ( ($nomeFoto != "") && (!preg_match('/^image\/(jpeg|png|gif)$/', $tipoFoto)) ) { 
      echo "<span id='error'>Isso não é uma imagem válida</span>";
 
     } else if ( ($nomeFoto != "") && ($tamanhoFoto > TAMANHO_MAXIMO) ) { //validação tamanho arquivo

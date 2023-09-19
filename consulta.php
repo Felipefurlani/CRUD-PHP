@@ -1,78 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <title>CRUD - Controle de Funcionarios</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta Funcionarios</title>
 </head>
 
 <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
+                aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                <div class="navbar-nav">
+                    <a class="nav-link" href="index.php">Cadastro</a>
+                    <a class="nav-link active" href="#" aria-current="page">Consulta</a>
+                    <a class="nav-link" href="alterar.php">Alterar</a>
+                </div>
+            </div>
+        </div>
+    </nav>
 
-<a href="index.html">Home</a>
-<hr>
-
-<h2>Consulta de Funcionarios</h2>
-<div>
-    <form method="post">
-
-        RA:<br>
-        <input type="text" size="10" name="NIT">
-        <input type="submit" value="Consultar">
-        <hr>
+    <form method="POST" enctype="multipart/form-data">
+        <br><br>
+        <div class="container-md">
+            <h1>Consulta de Funcionarios</h1>
+            <br><br>
+            <div class="mb-3">
+                <input type="number" class="form-control" id="formGroupExampleInput" placeholder="NIT"
+                    name="NIT">
+                <br>
+                <button class="btn btn-primary" type="submit">Consultar</button>
+            </div>
+            <br><br>
+            <?php
+            if ($_SERVER["REQUEST_METHOD"] === 'POST') {
+                try {
+                    $NIT = $_POST["NIT"];
+                    include_once("funcoes.php");
+                    consultarFuncionarios($NIT);
+                } catch (PDOException $e) {
+                    echo "Error: " . $e->getMessage();
+                }
+            }
+            ?>
+        </div>
     </form>
-</div>
-
 </body>
+
 </html>
-
-<?php
-    include("conexaoBD.php");
-
-     if ($_SERVER["REQUEST_METHOD"] === 'POST') {
-
-         if (isset($_POST["NIT"]) && ($_POST["NIT"] != "")) {
-             $ra = $_POST["NIT"];
-             $stmt = $pdo->prepare("select * from Funcionarios 
-             where NIT= :NIT order by NIT, nome, setor");
-             $stmt->bindParam(':ra', $ra);
-         } else {
-             $stmt = $pdo->prepare("select * from Funcionarios 
-             order by NIT, nome, setor");
-         }
-
-         try {
-             //buscando dados
-             $stmt->execute();
-
-             echo "<form method='post'><table border='1px'>";
-             echo "<tr><th></th><th>NIT</th><th>Nome</th><th>Setor</th><th>Foto</th></tr>";
-
-             while ($row = $stmt->fetch()) {
-                 echo "<tr>";
-                 echo "<td><input type='radio' name='NITFuncionario' 
-                      value='" . $row['NIT'] . "'>";
-                 echo "<td>" . $row['NIT'] . "</td>";
-                 echo "<td>" . $row['nome'] . "</td>";
-                 echo "<td>" . $row['setor'] . "</td>";
-
-                 if ($row["arquivoFoto"] == null) {
-                     echo "<td align='center'>-</td>";
-                 } else {
-                    echo "<td align='center'><img src=".$row['arquivoFoto'] . " width='50px' height='50px'></td>";
-                 }
-                 echo "</tr>";
-             }
-
-             echo "</table><br>
-             
-             <button type='submit' formaction='remove.php'>Excluir funcionario</button>
-             <button type='submit' formaction='edicao.php'>Editar funcionario</button>
-             
-             </form>";
-
-
-         } catch (PDOException $e) {
-             echo 'Error: ' . $e->getMessage();
-         }
-
-     }
-?>

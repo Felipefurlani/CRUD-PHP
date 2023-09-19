@@ -62,7 +62,7 @@ function cadastrarfuncionario($nome, $NIT, $setor, $foto)
     } else {
         if ($nome_foto != "") {
             if (move_uploaded_file($foto['tmp_name'], $upload_dir . $novo_nome_foto)) {
-                $stmt = $pdo->prepare("select * from Funcionarios where nome = :nome");
+                $stmt = $pdo->prepare("select * from Funcionarios where foto = :foto");
                 $stmt->bindValue(':nome', $nome);
                 $stmt->execute();
 
